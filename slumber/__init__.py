@@ -36,8 +36,13 @@ class ResourceAttributesMixin(object):
         if item.startswith("_"):
             raise AttributeError(item)
 
+        try:
+            store_values = self._store.iteritems()
+        except AttributeError:
+            store_values = self._store.items()
+
         kwargs = {}
-        for key, value in self._store.iteritems():
+        for key, value in store_values:
             kwargs[key] = value
 
         kwargs.update({"base_url": url_join(self._store["base_url"], item)})
@@ -71,8 +76,13 @@ class Resource(ResourceAttributesMixin, object):
         if id is None and format is None and url_override is None:
             return self
 
+        try:
+            store_values = self._store.iteritems()
+        except AttributeError:
+            store_values = self._store.items()
+
         kwargs = {}
-        for key, value in self._store.iteritems():
+        for key, value in store_values:
             kwargs[key] = value
 
         if id is not None:

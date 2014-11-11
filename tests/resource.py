@@ -270,3 +270,32 @@ class ResourceTestCase(unittest.TestCase):
 
         if not isinstance(r, dict):
             self.fail("Serialization did not take place")
+
+    def test_get_200_json_subresource(self):
+        r = mock.Mock(spec=requests.Response)
+        r.status_code = 200
+        r.headers = {"content-type": "application/json"}
+        r.content = '{"result": ["a", "b", "c"]}'
+
+        self.base_resource._store.update({
+            "session": mock.Mock(spec=requests.Session),
+            "serializer": slumber.serialize.Serializer(),
+        })
+        self.base_resource._store["session"].request.return_value = r
+
+        resp = self.base_resource.test2._request("GET")
+
+        self.assertTrue(resp is r)
+        self.assertEqual(resp.content, r.content)
+
+        self.base_resource._store["session"].request.assert_called_once_with(
+            "GET",
+            "http://example/api/v1/test/test2",
+            data=None,
+            files=None,
+            params=None,
+            headers={"content-type": self.base_resource._store["serializer"].get_content_type(), "accept": self.base_resource._store["serializer"].get_content_type()}
+        )
+
+        resp = self.base_resource.get()
+        self.assertEqual(resp['result'], ['a', 'b', 'c'])
