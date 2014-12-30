@@ -1,14 +1,11 @@
+import simplejson as json
+
 from slumber import exceptions
 
 _SERIALIZERS = {
     "json": True,
     "yaml": True,
 }
-
-try:
-    import json
-except ImportError:
-    _SERIALIZERS["json"] = False
 
 try:
     import yaml

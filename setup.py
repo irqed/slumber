@@ -2,7 +2,7 @@ import os
 import sys
 from setuptools import setup
 
-install_requires = ["requests"]
+install_requires = ["requests", "simplejson"]
 tests_require = ["mock"]
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
